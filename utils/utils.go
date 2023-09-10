@@ -14,7 +14,7 @@ func Sleep(wait int) {
 }
 
 func Clear() {
-	cmd := exec.Command("clear")
+	cmd := exec.Command("cmd", "/c", "cls", "clear")
 	cmd.Stdout = os.Stdout
 	cmd.Run()
 }
