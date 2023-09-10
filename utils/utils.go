@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"os"
 	"os/exec"
+	"reflect"
 	"time"
 )
 
@@ -25,4 +26,8 @@ func Close(value bool) {
 		fmt.Println("See ya! :)")
 		os.Exit(0)
 	}
+}
+
+func Type(value interface{}) interface{} {
+	return reflect.TypeOf(value)
 }

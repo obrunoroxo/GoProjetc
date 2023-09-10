@@ -38,7 +38,6 @@ func LineConnector(name string) {
 	} else {
 		fmt.Printf("\nOops! Invalid input passed: %s \nPlease, try again!", answer)
 	}
-
 }
 
 func Separator(name string) {
@@ -93,7 +92,7 @@ func EditName(name string) {
 	var answer string
 
 	if value, ok := values[name]; ok {
-		fmt.Println("\nChoose a new name to edit the map [ %s: %d ]: ", name, value)
+		fmt.Printf("\nChoose a new name to edit the map [ %s: %d ]: ", name, value)
 		fmt.Scan(&answer)
 		// Create a new entry with the new key and the same value
 		values[answer] = value
@@ -108,16 +107,15 @@ func EditName(name string) {
 	}
 }
 
-func ConvertValuesToINT(value string) int {
+func ConvertValuesToINT(value string) interface{} {
 	convert, err := strconv.Atoi(value)
 	if err != nil {
-		fmt.Println(err)
+		return value
 	}
 
 	fmt.Println("The int value is:", convert)
 
 	return convert
-
 }
 
 func VerifyValues(name string) {
@@ -143,15 +141,16 @@ func VerifyValues(name string) {
 			if answer == "Yes" || answer == "Y" {
 				LineConnector(name)
 			} else if answer == "No" || answer == "N" {
+				utils.Clear()
 				main()
 			} else {
-				fmt.Println("\nOops! Invalid input passed: %s\nPlease, try again!", answer)
+				fmt.Printf("\nOops! Invalid input passed: %s\nPlease, try again!", answer)
 			}
 
 		}
 
 	} else {
-		fmt.Printf("Excellent! Last name [ %s ] does not yet exist on my map...\n", name)
+		fmt.Printf("Excellent! Last name [ %s ] does not yet exist on the map...\n", name)
 		AddNewValues(name)
 	}
 }
@@ -167,7 +166,6 @@ func main() {
 	fmt.Scan(&answer)
 	fmt.Printf("\nYou typed: %s\n", answer)
 	VerifyValues(answer)
-
 }
 
 func Menu() []string {
