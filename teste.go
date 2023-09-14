@@ -16,6 +16,7 @@ type datas struct {
 }
 
 func main() {
+	var personalData []datas
 	// Open a connection to the SQLite database.
 	db, err := sql.Open("sqlite3", "./TestesGoLang/database/personalData")
 	if err != nil {
@@ -28,28 +29,20 @@ func main() {
 	if err != nil {
 		panic(err)
 	}
-	fmt.Println(rows)
-	// Iterate over the rows and print the results.
+
+	// Iterate over the rows and append them to personalData.
 	for rows.Next() {
-		var id int
-		var name string
-		var nickname string
-		var email string
-		var password string
-		err = rows.Scan(&id, &name, &nickname, &email, &password)
+		var data datas // Create a new datas instance for each row
+		err = rows.Scan(&data.ID, &data.Name, &data.Nickname, &data.Email, &data.Password)
 		if err != nil {
 			panic(err)
 		}
-
-		// var personalData = []datas{
-		// 	{ID: id, Name: name, Nickname: nickname, Email: email, Password: password},
-		// }
+		personalData = append(personalData, data) // Append the current row to the slice
 	}
 
-	// fmt.Println(personalData)
+	defer rows.Close() // Close when done reading from table.
 
-	// Close the connection to the database.
-	// db.Close()
+	fmt.Println(personalData)
 
 	defer db.Close() // Close when done with it!
 
