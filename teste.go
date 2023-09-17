@@ -1,49 +1,41 @@
 package main
 
 import (
-	"database/sql"
 	"fmt"
+	"time"
 
-	_ "github.com/mattn/go-sqlite3"
+	"github.com/dgrijalva/jwt-go"
 )
 
-type datas struct {
-	ID       int    `json:"id"`
-	Name     string `json:"name"`
-	Nickname string `json:"nickname"`
-	Email    string `json:"email"`
-	Password string `json:"password"`
-}
+// Define a chave secreta para assinar o token. Mantenha isso em um local seguro.
+var secretKey = []byte("sua_chave_secreta_aqui")
 
 func main() {
-	var personalData []datas
-	// Open a connection to the SQLite database.
-	db, err := sql.Open("sqlite3", "./TestesGoLang/database/personalData")
+	// Crie um dicionário (mapa) com informações personalizadas
+	dict := map[string]interface{}{
+		"user_id":  123,
+		"username": "exemplo_usuario",
+	}
+
+	// Crie um token com as informações do dicionário
+	token := jwt.New(jwt.SigningMethodHS256)
+	claims := token.Claims.(jwt.MapClaims)
+
+	// Preencha as reivindicações (claims) do token com os dados do dicionário
+	for key, value := range dict {
+		claims[key] = value
+	}
+
+	// Defina o tempo de expiração do token (por exemplo, 24 horas a partir de agora)
+	claims["exp"] = time.Now().Add(time.Hour * 24).Unix()
+
+	// Assine o token com a chave secreta
+	tokenString, err := token.SignedString(secretKey)
 	if err != nil {
-		fmt.Println(err)
+		fmt.Println("Erro ao assinar o token:", err)
 		return
 	}
 
-	// Execute the query.
-	rows, err := db.Query("SELECT * FROM personalData;")
-	if err != nil {
-		panic(err)
-	}
-
-	// Iterate over the rows and append them to personalData.
-	for rows.Next() {
-		var data datas // Create a new datas instance for each row
-		err = rows.Scan(&data.ID, &data.Name, &data.Nickname, &data.Email, &data.Password)
-		if err != nil {
-			panic(err)
-		}
-		personalData = append(personalData, data) // Append the current row to the slice
-	}
-
-	defer rows.Close() // Close when done reading from table.
-
-	fmt.Println(personalData)
-
-	defer db.Close() // Close when done with it!
-
+	fmt.Println("Token JWT gerado:")
+	fmt.Println(tokenString)
 }
